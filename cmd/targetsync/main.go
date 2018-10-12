@@ -5,9 +5,10 @@ import (
 	"os"
 	"strings"
 
-	targetsync "github.com/jacksontj/targetSync"
 	flags "github.com/jessevdk/go-flags"
 	"github.com/sirupsen/logrus"
+
+	"github.com/wish/targetsync"
 )
 
 var opts struct {
