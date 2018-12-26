@@ -52,11 +52,14 @@ func (tg *AWSTargetGroup) GetTargets(ctx context.Context) ([]*Target, error) {
 		return nil, err
 	}
 
-	targets := make([]*Target, len(result.TargetHealthDescriptions))
-	for i, targetHealthDecription := range result.TargetHealthDescriptions {
-		targets[i] = &Target{
-			IP:   *targetHealthDecription.Target.Id,
-			Port: int(*targetHealthDecription.Target.Port),
+	targets := make([]*Target, 0)
+	for _, targetHealthDecription := range result.TargetHealthDescriptions {
+		if tg.cfg.AvailabilityZone == "" ||
+			*targetHealthDecription.Target.AvailabilityZone == tg.cfg.AvailabilityZone {
+			targets = append(targets, &Target{
+				IP:   *targetHealthDecription.Target.Id,
+				Port: int(*targetHealthDecription.Target.Port),
+			})
 		}
 	}
 
@@ -68,7 +71,7 @@ func (tg *AWSTargetGroup) AddTargets(ctx context.Context, targets []*Target) err
 
 	input := &elbv2.RegisterTargetsInput{
 		TargetGroupArn: aws.String(tg.cfg.TargetGroupARN),
-		Targets:        TargetToTargetDescription(targets),
+		Targets:        tg.TargetToTargetDescription(targets),
 	}
 
 	// TODO: check output
@@ -101,7 +104,7 @@ func (tg *AWSTargetGroup) AddTargets(ctx context.Context, targets []*Target) err
 func (tg *AWSTargetGroup) RemoveTargets(ctx context.Context, targets []*Target) error {
 	input := &elbv2.DeregisterTargetsInput{
 		TargetGroupArn: aws.String(tg.cfg.TargetGroupARN),
-		Targets:        TargetToTargetDescription(targets),
+		Targets:        tg.TargetToTargetDescription(targets),
 	}
 
 	// TODO: check output
@@ -128,12 +131,15 @@ func (tg *AWSTargetGroup) RemoveTargets(ctx context.Context, targets []*Target) 
 }
 
 // TargetToTargetDescription translates the `Target` struct into an ec2 `TargetDescription`
-func TargetToTargetDescription(targets []*Target) []*elbv2.TargetDescription {
+func (tg *AWSTargetGroup) TargetToTargetDescription(targets []*Target) []*elbv2.TargetDescription {
 	descs := make([]*elbv2.TargetDescription, len(targets))
 	for i, target := range targets {
 		descs[i] = &elbv2.TargetDescription{
 			Id:   aws.String(target.IP),
 			Port: aws.Int64(int64(target.Port)),
+		}
+		if tg.cfg.AvailabilityZone != "" {
+			descs[i].AvailabilityZone = aws.String(tg.cfg.AvailabilityZone)
 		}
 	}
 	return descs

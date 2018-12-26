@@ -42,11 +42,13 @@ type Config struct {
 type ConsulConfig struct {
 	ClientConfig *consulApi.Config `yaml:"client"`
 	ServiceName  string            `yaml:"service_name"`
+	Tag          string            `yaml:"tag"`
 }
 
 // AWSConfig holds the configuration for the aws destination
 type AWSConfig struct {
-	TargetGroupARN string `yaml:"target_group_arn"`
+	TargetGroupARN   string `yaml:"target_group_arn"`
+	AvailabilityZone string `yaml:"availability_zone"`
 }
 
 // SyncConfig holds options for the Syncer
