@@ -93,7 +93,7 @@ func (s *ConsulSource) Subscribe(ctx context.Context) (chan []*Target, error) {
 				return
 			default:
 			}
-			services, meta, err := s.healthClient.Service(s.cfg.ServiceName, "", true, queryOpts)
+			services, meta, err := s.healthClient.Service(s.cfg.ServiceName, s.cfg.Tag, true, queryOpts)
 			if err != nil {
 				// TODO: sleep on failure with backoff etc.
 				continue
