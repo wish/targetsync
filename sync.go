@@ -43,7 +43,9 @@ func (s *Syncer) Run(ctx context.Context) error {
 				go s.runLeader(leaderCtx)
 			} else {
 				logrus.Infof("Lock lost, stopping leader actions")
-				leaderCtxCancel()
+				if leaderCtxCancel != nil {
+					leaderCtxCancel()
+				}
 			}
 		}
 	}
