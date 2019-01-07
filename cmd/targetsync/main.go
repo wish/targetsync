@@ -83,6 +83,6 @@ func main() {
 
 	// Run
 	if err := syncer.Run(ctx); err != nil {
-		logrus.Errorf("Error starting targetSync: %v", err)
+		logrus.Errorf("Error running targetSync: %v", err)
 	}
 }

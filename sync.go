@@ -2,6 +2,7 @@ package targetsync
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/jacksontj/lane"
@@ -36,7 +37,10 @@ func (s *Syncer) Run(ctx context.Context) error {
 				leaderCtxCancel()
 			}
 			return ctx.Err()
-		case elected := <-electedCh:
+		case elected, ok := <-electedCh:
+			if !ok {
+				return fmt.Errorf("Lock channel closed")
+			}
 			if elected {
 				leaderCtx, leaderCtxCancel = context.WithCancel(ctx)
 				logrus.Infof("Lock acquired, starting leader actions")

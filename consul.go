@@ -36,6 +36,7 @@ func (s *ConsulSource) Lock(ctx context.Context, opts *LockOptions) (<-chan bool
 		SessionTTL: opts.TTL.String(),
 	})
 	if err != nil {
+		logrus.Errorf("Error creating consul lock: %v", err)
 		return nil, err
 	}
 
@@ -64,6 +65,7 @@ func (s *ConsulSource) Lock(ctx context.Context, opts *LockOptions) (<-chan bool
 
 			select {
 			case <-ctx.Done():
+				logrus.Infof("Context done, stopping lock")
 				return
 			case <-lockCh:
 				logrus.Infof("Lock lost")
