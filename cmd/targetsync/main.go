@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"net"
+	"net/http"
 	"os"
 	"strings"
 
@@ -14,6 +16,7 @@ import (
 var opts struct {
 	ConfigFile string `long:"config" description:"path to the config file" required:"true"`
 	LogLevel   string `long:"log-level" description:"Log level" default:"info"`
+	BindAddr   string `long:"bind-address" description:"address for binding checks to"`
 }
 
 func main() {
@@ -53,6 +56,26 @@ func main() {
 	}
 	logrus.SetFormatter(formatter)
 
+	var ready bool
+
+	if opts.BindAddr != "" {
+		l, err := net.Listen("tcp", opts.BindAddr)
+		if err != nil {
+			logrus.Fatalf("Error binding: %v", err)
+		}
+
+		go func() {
+			http.HandleFunc("/ready", func(w http.ResponseWriter, r *http.Request) {
+				logrus.Infof("ready? %v", ready)
+				if !ready {
+					http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+				}
+			})
+			// TODO: log error?
+			http.Serve(l, http.DefaultServeMux)
+		}()
+	}
+
 	// Create base context for this daemon
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -80,6 +103,8 @@ func main() {
 		Src:    src,
 		Dst:    dst,
 	}
+
+	ready = true
 
 	// Run
 	if err := syncer.Run(ctx); err != nil {
