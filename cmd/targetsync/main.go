@@ -14,9 +14,9 @@ import (
 )
 
 var opts struct {
-	ConfigFile string `long:"config" description:"path to the config file" required:"true"`
-	LogLevel   string `long:"log-level" description:"Log level" default:"info"`
-	BindAddr   string `long:"bind-address" description:"address for binding checks to"`
+	ConfigFile string `long:"config" env:"CONFIG_FILE" description:"path to the config file" required:"true"`
+	LogLevel   string `long:"log-level" env:"LOG_LEVEL" description:"Log level" default:"info"`
+	BindAddr   string `long:"bind-address" env:"BIND_ADDRESS" description:"address for binding checks to"`
 }
 
 func main() {
