@@ -27,6 +27,10 @@ func ConfigFromFile(path string) (*Config, error) {
 		return nil, fmt.Errorf("Error unmarshaling config: %v", err)
 	}
 
+	if err := cfg.Validate(); err != nil {
+		return nil, err
+	}
+
 	return cfg, nil
 }
 
@@ -36,6 +40,10 @@ type Config struct {
 	AWSConfig    `yaml:"aws"`
 
 	SyncConfig `yaml:"syncer"`
+}
+
+func (c *Config) Validate() error {
+	return c.SyncConfig.Validate()
 }
 
 // ConsulConfig holds the configuration for the consul source
@@ -56,4 +64,11 @@ type SyncConfig struct {
 	LockOptions `yaml:"lock_options"`
 
 	RemoveDelay time.Duration `yaml:"remove_delay"`
+}
+
+func (c SyncConfig) Validate() error {
+	if c.LockOptions.TTL <= time.Duration(0) {
+		return fmt.Errorf("TTL for locks must be >0")
+	}
+	return nil
 }

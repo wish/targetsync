@@ -34,7 +34,6 @@ type TargetDestination interface {
 }
 
 // LockOptions holds the options for locking/leader-election
-// TODO: switch to this
 type LockOptions struct {
 	Key string        `yaml:"key"`
 	TTL time.Duration `yaml:"ttl"`
