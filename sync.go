@@ -75,7 +75,10 @@ func (s *Syncer) bgRemove(ctx context.Context, removeCh chan *Target, addCh chan
 			removeUnixTime := now.Add(s.Config.RemoveDelay).Unix()
 			if headItem, headAt := q.Head(); headItem == nil || removeUnixTime < headAt {
 				if !t.Stop() {
-					<-t.C
+					select {
+					case <-t.C:
+					default:
+					}
 				}
 				t.Reset(s.Config.RemoveDelay)
 			}
@@ -92,26 +95,36 @@ func (s *Syncer) bgRemove(ctx context.Context, removeCh chan *Target, addCh chan
 			// do the removal
 			headItem, headUnixTime := q.Head()
 			logrus.Debugf("Processing target removal: %v", headItem)
-			if headItem != nil {
-				now := time.Now()
+			now := time.Now()
+			nowUnix := now.Unix()
+
+		DELETE_LOOP:
+			for headItem != nil {
 				// If we where woken before something is ready, just reschedule
-				if headUnixTime < now.Unix() {
-					d := time.Unix(headUnixTime, 0).Sub(now)
-					if !t.Stop() {
-						<-t.C
-					}
-					t.Reset(d)
+				if headUnixTime < nowUnix {
+					break DELETE_LOOP
 				} else {
 					target := headItem.(*Target)
 					if err := s.Dst.RemoveTargets(ctx, []*Target{target}); err == nil {
 						logrus.Debugf("Target removal successful: %v", target)
 						q.Pop()
 						delete(itemMap, target.Key())
+					} else {
+						break DELETE_LOOP
 					}
 				}
-
-				// Now that we did our thing, we need to calculate the next wake up time
-				t.Reset(time.Unix(headUnixTime, 0).Sub(now))
+				headItem, headUnixTime = q.Head()
+			}
+			// If there is still an item in the queue, reset the timer
+			if headItem != nil {
+				d := time.Unix(headUnixTime, 0).Sub(now)
+				if !t.Stop() {
+					select {
+					case <-t.C:
+					default:
+					}
+				}
+				t.Reset(d)
 			}
 		}
 	}
