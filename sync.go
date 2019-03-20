@@ -145,14 +145,14 @@ func (s *Syncer) runLeader(ctx context.Context) error {
 			return ctx.Err()
 		case srcTargets = <-srcCh:
 		}
-		logrus.Debugf("Received targets from source: %v", srcTargets)
+		logrus.Debugf("Received targets from source: %+#v", srcTargets)
 
 		// get current ones from dst
 		dstTargets, err := s.Dst.GetTargets(ctx)
 		if err != nil {
 			return err
 		}
-		logrus.Debugf("Fetched targets from destination: %v", dstTargets)
+		logrus.Debugf("Fetched targets from destination: %+#v", dstTargets)
 
 		// TODO: compare ports and do something with them
 		srcMap := make(map[string]*Target)
