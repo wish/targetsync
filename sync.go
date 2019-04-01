@@ -69,7 +69,10 @@ func (s *Syncer) bgRemove(ctx context.Context, removeCh chan *Target, addCh chan
 		select {
 		case <-ctx.Done():
 			return
-		case toRemove := <-removeCh:
+		case toRemove, ok := <-removeCh:
+			if !ok {
+				continue
+			}
 			logrus.Debugf("Scheduling target for removal from destination in %v: %v", s.Config.RemoveDelay, toRemove)
 			now := time.Now()
 			removeUnixTime := now.Add(s.Config.RemoveDelay).Unix()
@@ -83,7 +86,10 @@ func (s *Syncer) bgRemove(ctx context.Context, removeCh chan *Target, addCh chan
 				t.Reset(s.Config.RemoveDelay)
 			}
 			itemMap[toRemove.Key()] = q.Push(toRemove, removeUnixTime)
-		case toAdd := <-addCh:
+		case toAdd, ok := <-addCh:
+			if !ok {
+				continue
+			}
 			key := toAdd.Key()
 			if item, ok := itemMap[key]; ok {
 				logrus.Debugf("Removing target from removal queue as it was re-added: %v", toAdd)
