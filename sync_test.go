@@ -23,7 +23,7 @@ func equalTargets(a, b []*Target) error {
 		return fmt.Errorf("Mismatch in len")
 	}
 
-	for k, _ := range aMap {
+	for k := range aMap {
 		if _, ok := bMap[k]; !ok {
 			return fmt.Errorf("b is missing %s", k)
 		}
@@ -53,8 +53,8 @@ func TestSyncer(t *testing.T) {
 	go syncer.Run(context.TODO())
 
 	targets := []*Target{
-		&Target{IP: "1"},
-		&Target{IP: "2"},
+		{IP: "1"},
+		{IP: "2"},
 	}
 
 	// set targets
