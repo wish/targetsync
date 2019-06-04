@@ -12,15 +12,59 @@ import (
 // Syncer is the struct that uses the various interfaces to actually do the sync
 // TODO: metrics
 type Syncer struct {
-	Config *SyncConfig
-	Locker Locker
-	Src    TargetSource
-	Dst    TargetDestination
+	Config    *SyncConfig
+	LocalAddr string
+	Locker    Locker
+	Src       TargetSource
+	Dst       TargetDestination
+	Started   bool
+}
+
+// syncSelf simply syncs the LocalAddr from the souce to the target
+func (s *Syncer) syncSelf(ctx context.Context) error {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	logrus.Infof("Local Addr %s -- waiting until added to target", s.LocalAddr)
+	srcCh, err := s.Src.Subscribe(ctx)
+	if err != nil {
+		return err
+	}
+
+	// Now we wait until our IP shows up in the source data, once it does
+	// we add ourselves to the target
+	for {
+		logrus.Debugf("Waiting for targets from source")
+		var srcTargets []*Target
+		select {
+		case <-ctx.Done():
+			return ctx.Err()
+		case srcTargets = <-srcCh:
+		}
+		logrus.Debugf("Received targets from source: %+#v", srcTargets)
+
+		for _, target := range srcTargets {
+			if target.IP == s.LocalAddr {
+				// try adding ourselves
+				if err := s.Dst.AddTargets(ctx, []*Target{target}); err != nil {
+					return err
+				}
+				return nil
+			}
+		}
+	}
 }
 
 // Run is the main method for the syncer. This is responsible for calling
 // runLeader when the lock is held
 func (s *Syncer) Run(ctx context.Context) error {
+	// add ourselves if a LocalAddr was defined
+	if s.LocalAddr != "" {
+		if err := s.syncSelf(ctx); err != nil {
+			return err
+		}
+	}
+
+	s.Started = true
 	logrus.Debugf("Syncer creating lock: %v", s.Config.LockOptions)
 	electedCh, err := s.Locker.Lock(ctx, &s.Config.LockOptions)
 	if err != nil {

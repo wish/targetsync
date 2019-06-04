@@ -16,6 +16,7 @@ var opts struct {
 	ConfigFile string `long:"config" env:"CONFIG_FILE" description:"path to the config file" required:"true"`
 	LogLevel   string `long:"log-level" env:"LOG_LEVEL" description:"Log level" default:"info"`
 	BindAddr   string `long:"bind-address" env:"BIND_ADDRESS" description:"address for binding checks to"`
+	LocalAddr  string `long:"local-address" env:"LOCAL_ADDRESS" description:"address of this process"`
 }
 
 func main() {
@@ -42,26 +43,6 @@ func main() {
 	}
 	logrus.SetFormatter(formatter)
 
-	var ready bool
-
-	if opts.BindAddr != "" {
-		l, err := net.Listen("tcp", opts.BindAddr)
-		if err != nil {
-			logrus.Fatalf("Error binding: %v", err)
-		}
-
-		go func() {
-			http.HandleFunc("/ready", func(w http.ResponseWriter, r *http.Request) {
-				logrus.Infof("ready? %v", ready)
-				if !ready {
-					http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
-				}
-			})
-			// TODO: log error?
-			http.Serve(l, http.DefaultServeMux)
-		}()
-	}
-
 	// Create base context for this daemon
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -84,13 +65,29 @@ func main() {
 	}
 
 	syncer := &targetsync.Syncer{
-		Config: &cfg.SyncConfig,
-		Locker: src,
-		Src:    src,
-		Dst:    dst,
+		Config:    &cfg.SyncConfig,
+		LocalAddr: opts.LocalAddr,
+		Locker:    src,
+		Src:       src,
+		Dst:       dst,
 	}
 
-	ready = true
+	if opts.BindAddr != "" {
+		l, err := net.Listen("tcp", opts.BindAddr)
+		if err != nil {
+			logrus.Fatalf("Error binding: %v", err)
+		}
+
+		go func() {
+			http.HandleFunc("/ready", func(w http.ResponseWriter, r *http.Request) {
+				logrus.Infof("ready? %v", syncer.Started)
+				if !syncer.Started {
+					http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+				}
+			})
+			logrus.Error(http.Serve(l, http.DefaultServeMux))
+		}()
+	}
 
 	// Run
 	if err := syncer.Run(ctx); err != nil {
