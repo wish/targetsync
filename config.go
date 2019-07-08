@@ -36,8 +36,9 @@ func ConfigFromFile(path string) (*Config, error) {
 
 // Config for the targetsync
 type Config struct {
-	ConsulConfig `yaml:"consul"`
-	AWSConfig    `yaml:"aws"`
+	ConsulConfig       `yaml:"consul"`
+	AWSConfig          `yaml:"aws"`
+	K8sEndpointsConfig `yaml:"k8s_enpoints"`
 
 	SyncConfig `yaml:"syncer"`
 }
@@ -57,6 +58,18 @@ type ConsulConfig struct {
 type AWSConfig struct {
 	TargetGroupARN   string `yaml:"target_group_arn"`
 	AvailabilityZone string `yaml:"availability_zone"`
+}
+
+type K8sConfig struct {
+	InCluster      bool   `yaml:"in_cluster"`
+	KubeConfigPath string `yaml:"kubeconfig_path"`
+}
+
+type K8sEndpointsConfig struct {
+	K8sConfig `yaml:"k8s"`
+	Name      string `yaml:"name"`
+	Namespace string `yaml:"namespace"`
+	Port      int    `yaml:"port"`
 }
 
 // SyncConfig holds options for the Syncer
