@@ -13,5 +13,3 @@
 
 # exclude built binary
 cmd/targetsync/targetsync
-
-vendor
