@@ -13,7 +13,7 @@ import (
 )
 
 var opts struct {
-	ConfigFile string `long:"config" env:"CONFIG_FILE" description:"path to the config file" required:"true"`
+	ConfigFile string `short:"c" long:"config" env:"CONFIG_FILE" description:"path to the config file" required:"true"`
 	LogLevel   string `long:"log-level" env:"LOG_LEVEL" description:"Log level" default:"info"`
 	BindAddr   string `long:"bind-address" env:"BIND_ADDRESS" description:"address for binding checks to"`
 	LocalAddr  string `long:"local-address" env:"LOCAL_ADDRESS" description:"address of this process"`
@@ -53,10 +53,18 @@ func main() {
 		logrus.Fatalf("Unable to load config: %v", err)
 	}
 
+	var src targetsync.TargetSourceLocker
 	// Create syncer
-	src, err := targetsync.NewConsulSource(&cfg.ConsulConfig)
-	if err != nil {
-		logrus.Fatalf("Error creating consul source: %v", err)
+	if cfg.ConsulConfig.ServiceName != "" {
+		src, err = targetsync.NewConsulSource(&cfg.ConsulConfig)
+		if err != nil {
+			logrus.Fatalf("Error creating consul source: %v", err)
+		}
+	} else {
+		src, err = targetsync.NewK8sEndpointsSource(&cfg.K8sEndpointsConfig)
+		if err != nil {
+			logrus.Fatalf("Error creating k8s endpoints source: %v", err)
+		}
 	}
 
 	dst, err := targetsync.NewAWSTargetGroup(&cfg.AWSConfig)

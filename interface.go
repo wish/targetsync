@@ -45,3 +45,8 @@ type Locker interface {
 	// which will respond with whether we are the leader
 	Lock(context.Context, *LockOptions) (<-chan bool, error)
 }
+
+type TargetSourceLocker interface {
+	Locker
+	TargetSource
+}
