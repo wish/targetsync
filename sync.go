@@ -117,6 +117,12 @@ func (s *Syncer) bgRemove(ctx context.Context, removeCh chan *Target, addCh chan
 			if !ok {
 				continue
 			}
+
+			// This means the target is already scheduled for removal
+			if _, ok := itemMap[toRemove.Key()]; ok {
+				continue
+			}
+
 			logrus.Debugf("Scheduling target for removal from destination in %v: %v", s.Config.RemoveDelay, toRemove)
 			now := time.Now()
 			removeUnixTime := now.Add(s.Config.RemoveDelay).Unix()
