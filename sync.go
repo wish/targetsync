@@ -230,9 +230,12 @@ func (s *Syncer) runLeader(ctx context.Context) error {
 		// Add hosts first
 		hostsToAdd := make([]*Target, 0)
 		for ip, target := range srcMap {
+			// We want to ensure that any target we think should be alive isn't
+			// in the removal queue
+			addCh <- target
+
 			if _, ok := dstMap[ip]; !ok {
 				hostsToAdd = append(hostsToAdd, target)
-				addCh <- target
 			}
 		}
 		if len(hostsToAdd) > 0 {
