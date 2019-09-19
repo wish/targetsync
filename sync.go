@@ -166,6 +166,7 @@ func (s *Syncer) bgRemove(ctx context.Context, removeCh chan *Target, addCh chan
 						q.Pop()
 						delete(itemMap, target.Key())
 					} else {
+						logrus.Errorf("Target removal unsuccessful %v: %v", target, err)
 						break DELETE_LOOP
 					}
 				}
