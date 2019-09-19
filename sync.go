@@ -151,7 +151,7 @@ func (s *Syncer) bgRemove(ctx context.Context, removeCh chan *Target, addCh chan
 		DELETE_LOOP:
 			for headItem != nil {
 				// If we where woken before something is ready, just reschedule
-				if headUnixTime < nowUnix {
+				if headUnixTime > nowUnix {
 					break DELETE_LOOP
 				} else {
 					target := headItem.(*Target)
