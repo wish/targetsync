@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/elbv2"
+	"github.com/sirupsen/logrus"
 )
 
 // NewAWSTargetGroup returns a new AWS target group destination
@@ -53,13 +54,17 @@ func (tg *AWSTargetGroup) GetTargets(ctx context.Context) ([]*Target, error) {
 	}
 
 	targets := make([]*Target, 0)
-	for _, targetHealthDecription := range result.TargetHealthDescriptions {
-		if tg.cfg.AvailabilityZone == "" ||
-			*targetHealthDecription.Target.AvailabilityZone == tg.cfg.AvailabilityZone {
-			targets = append(targets, &Target{
-				IP:   *targetHealthDecription.Target.Id,
-				Port: int(*targetHealthDecription.Target.Port),
-			})
+	for _, healthDesc := range result.TargetHealthDescriptions {
+		if tg.cfg.AvailabilityZone == "" || *healthDesc.Target.AvailabilityZone == tg.cfg.AvailabilityZone {
+			switch state := *healthDesc.TargetHealth.State; state {
+			case elbv2.TargetHealthStateEnumInitial, elbv2.TargetHealthStateEnumHealthy:
+				targets = append(targets, &Target{
+					IP:   *healthDesc.Target.Id,
+					Port: int(*healthDesc.Target.Port),
+				})
+			default:
+				logrus.Debugf("Not return target %v as it is in state %v", *healthDesc.Target, state)
+			}
 		}
 	}
 
