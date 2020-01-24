@@ -55,7 +55,7 @@ func (tg *AWSTargetGroup) GetTargets(ctx context.Context) ([]*Target, error) {
 
 	targets := make([]*Target, 0)
 	for _, healthDesc := range result.TargetHealthDescriptions {
-		if tg.cfg.AvailabilityZone == "" ||	*healthDesc.Target.AvailabilityZone == tg.cfg.AvailabilityZone {
+		if tg.cfg.AvailabilityZone == "" || *healthDesc.Target.AvailabilityZone == tg.cfg.AvailabilityZone {
 			state := *healthDesc.TargetHealth.State
 			if state == elbv2.TargetHealthStateEnumInitial || state == elbv2.TargetHealthStateEnumHealthy {
 				targets = append(targets, &Target{
