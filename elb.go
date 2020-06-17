@@ -57,7 +57,7 @@ func (tg *AWSTargetGroup) GetTargets(ctx context.Context) ([]*Target, error) {
 	for _, healthDesc := range result.TargetHealthDescriptions {
 		if tg.cfg.AvailabilityZone == "" || *healthDesc.Target.AvailabilityZone == tg.cfg.AvailabilityZone {
 			switch state := *healthDesc.TargetHealth.State; state {
-			case elbv2.TargetHealthStateEnumInitial, elbv2.TargetHealthStateEnumHealthy:
+			case elbv2.TargetHealthStateEnumInitial, elbv2.TargetHealthStateEnumHealthy, elbv2.TargetHealthStateEnumUnhealthy:
 				targets = append(targets, &Target{
 					IP:   *healthDesc.Target.Id,
 					Port: int(*healthDesc.Target.Port),
