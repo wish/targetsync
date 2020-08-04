@@ -205,17 +205,31 @@ func (s *Syncer) runLeader(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
+	var srcTargets []*Target
+
+	// Check for destination changes every 15 minutes
+	// (timer initialized to inf to ensure source gets initialized first)
+	d := time.Minute * 15
+	t := time.NewTimer(time.Second * (1 << 32))
+	defer t.Stop()
 
 	// Wait for an update, if we get one sync it
 	for {
 		logrus.Debugf("Waiting for targets from source")
-		var srcTargets []*Target
 		select {
 		case <-ctx.Done():
 			return ctx.Err()
 		case srcTargets = <-srcCh:
+			logrus.Debugf("Received targets from source: %+#v", srcTargets)
+		case <-t.C:
 		}
-		logrus.Debugf("Received targets from source: %+#v", srcTargets)
+		if !t.Stop() {
+			select {
+			case <-t.C:
+			default:
+			}
+		}
+		t.Reset(d)
 
 		// get current ones from dst
 		dstTargets, err := s.Dst.GetTargets(ctx)
