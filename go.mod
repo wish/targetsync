@@ -14,7 +14,7 @@ require (
 	github.com/hashicorp/memberlist v0.2.2 // indirect
 	github.com/hashicorp/serf v0.8.1 // indirect
 	github.com/imdario/mergo v0.3.7 // indirect
-	github.com/jacksontj/lane v1.0.1-0.20161025155129-b6cd7688f976
+	github.com/jacksontj/lane v1.0.1-0.20200915204505-94dc08d5ca31
 	github.com/jessevdk/go-flags v1.4.0
 	github.com/mitchellh/go-homedir v1.0.0 // indirect
 	github.com/mitchellh/go-testing-interface v1.14.1 // indirect
