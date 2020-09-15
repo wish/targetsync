@@ -1,7 +1,11 @@
-FROM golang:1.15
+FROM --platform=$BUILDPLATFORM golang:1.15
+
+ARG BUILDPLATFORM
+ARG TARGETARCH
+ARG TARGETOS
 WORKDIR /go/src/github.com/wish/targetsync/
 COPY . /go/src/github.com/wish/targetsync/
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo ./cmd/targetsync
+RUN CGO_ENABLED=0 GOARCH=${TARGETARCH} GOOS=${TARGETOS} go build -a -installsuffix cgo ./cmd/targetsync
 
 
 
