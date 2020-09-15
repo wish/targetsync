@@ -71,7 +71,7 @@ github.com/hashicorp/serf/coordinate
 # github.com/imdario/mergo v0.3.7
 ## explicit
 github.com/imdario/mergo
-# github.com/jacksontj/lane v1.0.1-0.20161025155129-b6cd7688f976
+# github.com/jacksontj/lane v1.0.1-0.20200915204505-94dc08d5ca31
 ## explicit
 github.com/jacksontj/lane
 # github.com/jessevdk/go-flags v1.4.0
