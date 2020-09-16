@@ -14,8 +14,9 @@ import (
 // NewAWSTargetGroup returns a new AWS target group destination
 func NewAWSTargetGroup(cfg *AWSConfig) (*AWSTargetGroup, error) {
 	// TODO: verify that this client is good at creation time (ping or something)
+	sess := session.Must(session.NewSession())
 	return &AWSTargetGroup{
-		svc: elbv2.New(session.New()),
+		svc: elbv2.New(sess),
 		cfg: cfg,
 	}, nil
 }

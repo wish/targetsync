@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/armon/go-metrics v0.3.4 // indirect
-	github.com/aws/aws-sdk-go v1.15.38
+	github.com/aws/aws-sdk-go v1.23.13
 	github.com/go-ini/ini v1.38.2 // indirect
 	github.com/googleapis/gnostic v0.3.0 // indirect
 	github.com/hashicorp/consul v1.2.3
