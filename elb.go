@@ -57,14 +57,13 @@ func (tg *AWSTargetGroup) GetTargets(ctx context.Context) ([]*Target, error) {
 	targets := make([]*Target, 0)
 	for _, healthDesc := range result.TargetHealthDescriptions {
 		if tg.cfg.AvailabilityZone == "" || *healthDesc.Target.AvailabilityZone == tg.cfg.AvailabilityZone {
-			switch state := *healthDesc.TargetHealth.State; state {
-			case elbv2.TargetHealthStateEnumInitial, elbv2.TargetHealthStateEnumHealthy, elbv2.TargetHealthStateEnumUnhealthy:
+			if state := *healthDesc.TargetHealth.State; state != elbv2.TargetHealthStateEnumDraining {
 				targets = append(targets, &Target{
 					IP:   *healthDesc.Target.Id,
 					Port: int(*healthDesc.Target.Port),
 				})
-			default:
-				logrus.Debugf("Not return target %v as it is in state %v", *healthDesc.Target, state)
+			} else {
+				logrus.Debugf("Target %v excluded as it is in state %v", *healthDesc.Target, state)
 			}
 		}
 	}

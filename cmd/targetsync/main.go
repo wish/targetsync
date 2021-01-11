@@ -4,6 +4,7 @@ import (
 	"context"
 	"net"
 	"net/http"
+	_ "net/http/pprof"
 	"os"
 
 	flags "github.com/jessevdk/go-flags"
@@ -20,6 +21,11 @@ var opts struct {
 }
 
 func main() {
+	// pprof
+	go func() {
+		logrus.Debugln(http.ListenAndServe("localhost:6060", nil))
+	}()
+
 	parser := flags.NewParser(&opts, flags.Default)
 	if _, err := parser.Parse(); err != nil {
 		// If the error was from the parser, then we can simply return

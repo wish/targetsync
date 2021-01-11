@@ -54,8 +54,10 @@ func (s *ConsulSource) Lock(ctx context.Context, opts *LockOptions) (<-chan bool
 		}()
 		for {
 			lockCh, err := lock.Lock(stopCh)
-			if err != nil {
-				logrus.Errorf("Error acquiring lock: %v", err)
+			if lockCh == nil || err != nil {
+				if err != nil {
+					logrus.Errorf("Error acquiring lock: %v", err)
+				}
 				return
 			}
 
