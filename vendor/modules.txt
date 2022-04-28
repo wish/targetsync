@@ -1,6 +1,7 @@
-# github.com/armon/go-metrics v0.3.4
+# github.com/armon/go-metrics v0.3.10
 ## explicit
-# github.com/aws/aws-sdk-go v1.23.13
+github.com/armon/go-metrics
+# github.com/aws/aws-sdk-go v1.25.41
 ## explicit
 github.com/aws/aws-sdk-go/aws
 github.com/aws/aws-sdk-go/aws/awserr
@@ -37,40 +38,59 @@ github.com/aws/aws-sdk-go/service/sts
 github.com/aws/aws-sdk-go/service/sts/stsiface
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
-# github.com/go-ini/ini v1.38.2
+# github.com/fatih/color v1.9.0
+github.com/fatih/color
+# github.com/gogo/protobuf v1.3.2
 ## explicit
-# github.com/gogo/protobuf v1.2.2-0.20190723190241-65acae22fc9d
 github.com/gogo/protobuf/proto
 github.com/gogo/protobuf/sortkeys
-# github.com/golang/protobuf v1.3.2
+# github.com/golang/groupcache v0.0.0-20190129154638-5b532d6fd5ef
+## explicit
+# github.com/golang/protobuf v1.3.5
+## explicit
 github.com/golang/protobuf/proto
 github.com/golang/protobuf/ptypes
 github.com/golang/protobuf/ptypes/any
 github.com/golang/protobuf/ptypes/duration
 github.com/golang/protobuf/ptypes/timestamp
-# github.com/google/gofuzz v1.0.0
+# github.com/google/go-cmp v0.5.2
+## explicit
+# github.com/google/gofuzz v1.2.0
+## explicit
 github.com/google/gofuzz
+github.com/google/gofuzz/bytesource
 # github.com/googleapis/gnostic v0.3.0
 ## explicit
 github.com/googleapis/gnostic/OpenAPIv2
 github.com/googleapis/gnostic/compiler
 github.com/googleapis/gnostic/extensions
-# github.com/hashicorp/consul v1.2.3
+# github.com/hashicorp/consul/api v1.10.0
 ## explicit
 github.com/hashicorp/consul/api
-# github.com/hashicorp/go-cleanhttp v0.5.0
+# github.com/hashicorp/consul/sdk v0.8.0
+## explicit
+# github.com/hashicorp/go-cleanhttp v0.5.1
 github.com/hashicorp/go-cleanhttp
+# github.com/hashicorp/go-hclog v0.14.1
+## explicit
+github.com/hashicorp/go-hclog
+# github.com/hashicorp/go-immutable-radix v1.3.0
+## explicit
+github.com/hashicorp/go-immutable-radix
 # github.com/hashicorp/go-msgpack v1.1.5
 ## explicit
-# github.com/hashicorp/go-rootcerts v0.0.0-20160503143440-6bb64b370b90
-## explicit
+# github.com/hashicorp/go-rootcerts v1.0.2
 github.com/hashicorp/go-rootcerts
+# github.com/hashicorp/go-sockaddr v1.0.2
+## explicit
 # github.com/hashicorp/go-uuid v1.0.2
 ## explicit
-# github.com/hashicorp/memberlist v0.2.2
+# github.com/hashicorp/golang-lru v0.5.4
 ## explicit
-# github.com/hashicorp/serf v0.8.1
+github.com/hashicorp/golang-lru/simplelru
+# github.com/hashicorp/memberlist v0.3.1
 ## explicit
+# github.com/hashicorp/serf v0.9.5
 github.com/hashicorp/serf/coordinate
 # github.com/imdario/mergo v0.3.7
 ## explicit
@@ -85,14 +105,22 @@ github.com/jessevdk/go-flags
 github.com/jmespath/go-jmespath
 # github.com/json-iterator/go v1.1.9
 github.com/json-iterator/go
-# github.com/konsorten/go-windows-terminal-sequences v1.0.1
-github.com/konsorten/go-windows-terminal-sequences
-# github.com/mitchellh/go-homedir v1.0.0
+# github.com/konsorten/go-windows-terminal-sequences v1.0.2
 ## explicit
+github.com/konsorten/go-windows-terminal-sequences
+# github.com/kr/pretty v0.2.1
+## explicit
+# github.com/mattn/go-colorable v0.1.6
+github.com/mattn/go-colorable
+# github.com/mattn/go-isatty v0.0.12
+github.com/mattn/go-isatty
+# github.com/miekg/dns v1.1.41
+## explicit
+# github.com/mitchellh/go-homedir v1.1.0
 github.com/mitchellh/go-homedir
 # github.com/mitchellh/go-testing-interface v1.14.1
 ## explicit
-# github.com/mitchellh/mapstructure v1.0.0
+# github.com/mitchellh/mapstructure v1.4.1-0.20210112042008-8ebf2d61a8b4
 ## explicit
 github.com/mitchellh/mapstructure
 # github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
@@ -104,13 +132,15 @@ github.com/modern-go/reflect2
 # github.com/sirupsen/logrus v1.4.2
 ## explicit
 github.com/sirupsen/logrus
-# github.com/smartystreets/goconvey v1.6.4
-## explicit
 # github.com/spf13/pflag v1.0.5
 github.com/spf13/pflag
-# golang.org/x/crypto v0.0.0-20190923035154-9ee001bba392
+# github.com/stretchr/testify v1.6.1
+## explicit
+# golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a
+## explicit
 golang.org/x/crypto/ssh/terminal
-# golang.org/x/net v0.0.0-20191004110552-13f9640d40b9
+# golang.org/x/net v0.0.0-20211209124913-491a49abca63
+## explicit
 golang.org/x/net/context
 golang.org/x/net/context/ctxhttp
 golang.org/x/net/http/httpguts
@@ -118,18 +148,22 @@ golang.org/x/net/http2
 golang.org/x/net/http2/hpack
 golang.org/x/net/idna
 # golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
-## explicit
 golang.org/x/oauth2
 golang.org/x/oauth2/internal
-# golang.org/x/sys v0.0.0-20200122134326-e047566fdf82
+# golang.org/x/sys v0.0.0-20220224120231-95c6836cb0e7
+## explicit
+golang.org/x/sys/internal/unsafeheader
+golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/text v0.3.2
+# golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1
+golang.org/x/term
+# golang.org/x/text v0.3.6
 golang.org/x/text/secure/bidirule
 golang.org/x/text/transform
 golang.org/x/text/unicode/bidi
 golang.org/x/text/unicode/norm
-# golang.org/x/time v0.0.0-20190308202827-9d24e82272b4
+# golang.org/x/time v0.0.0-20200630173020-3af7569d3a1e
 ## explicit
 golang.org/x/time/rate
 # google.golang.org/appengine v1.6.1
@@ -142,11 +176,8 @@ google.golang.org/appengine/internal/remote_api
 google.golang.org/appengine/internal/urlfetch
 google.golang.org/appengine/urlfetch
 # gopkg.in/inf.v0 v0.9.1
-## explicit
 gopkg.in/inf.v0
-# gopkg.in/ini.v1 v1.61.0
-## explicit
-# gopkg.in/yaml.v2 v2.2.5
+# gopkg.in/yaml.v2 v2.2.8
 ## explicit
 gopkg.in/yaml.v2
 # k8s.io/api v0.17.0
